@@ -180,7 +180,47 @@ server.POST("/register", Handlers.Register(db))
 server.POST("/login", Middlewares.CheakUserInfo(db),Handlers.Login(pool,template))
 ```
 
+## 路由
 
+### /login
 
+| Body=>form-data | 描述   |
+| --------------- | ------ |
+| UID             | 用户ID |
+| Pwd             | 密码   |
 
+### /register
+
+| Body=>form-data | 描述 |
+| --------------- | ---- |
+| Pwd             | 密码 |
+| Name            | 昵称 |
+
+### /logout
+
+| Headers       | 描述 |
+| ------------- | ---- |
+| Authorization | 令牌 |
+
+### /upload
+
+| Body=>form-data | 描述       |
+| --------------- | ---------- |
+| file            | 上传的文件 |
+
+| Headers       | 描述                          |
+| ------------- | ----------------------------- |
+| Authorization | 令牌                          |
+| Content-Type  | 值统一为: multipart/form-data |
+
+### /download
+
+| Body=>form-data | 描述                                |
+| --------------- | ----------------------------------- |
+| filepath        | 当前用户目录下的文件路径(以“/”开头) |
+| filename        | 文件名                              |
+
+| Headers       | 描述 |
+| ------------- | ---- |
+| Authorization | 令牌 |
 
