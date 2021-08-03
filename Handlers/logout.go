@@ -1,13 +1,13 @@
 package Handlers
 
 import (
-	"NetworkDisk/Models/redis"
+	"NetworkDisk/Models/Redis"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func Logout(pool redis.RedisPool) gin.HandlerFunc {
+func Logout(pool *Redis.RedisPool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uid,err:=getUid(c)//获取UID
 		if err!=nil{

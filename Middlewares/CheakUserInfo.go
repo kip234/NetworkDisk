@@ -14,7 +14,7 @@ func CheakUserInfo(db *gorm.DB) gin.HandlerFunc {
 		if err!=nil{//绑定失败
 			c.JSON(http.StatusOK,gin.H{
 				"method":  "POST",
-				"routing": "register",
+				"Middlewares": "CheakUserInfo",
 				"error":err.Error(),
 			})
 			c.Abort()
@@ -24,7 +24,7 @@ func CheakUserInfo(db *gorm.DB) gin.HandlerFunc {
 		if err:=tmp.Load(db,user.Uid);err!=nil{//查找失败
 			c.JSON(http.StatusOK,gin.H{
 				"method":  "POST",
-				"routing": "register",
+				"Middlewares": "CheakUserInfo",
 				"error":err.Error(),
 			})
 			c.Abort()
@@ -33,7 +33,7 @@ func CheakUserInfo(db *gorm.DB) gin.HandlerFunc {
 		if tmp.Pwd!=user.Pwd{//密码对不上
 			c.JSON(http.StatusOK,gin.H{
 				"method":  "POST",
-				"routing": "register",
+				"Middlewares": "CheakUserInfo",
 				"error":"password wrong !",
 			})
 			c.Abort()

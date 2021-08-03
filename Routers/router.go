@@ -5,60 +5,33 @@ package Routers
 import (
 	"NetworkDisk/Handlers"
 	"NetworkDisk/Middlewares"
-	"NetworkDisk/Models/jwt"
-	"NetworkDisk/Models/redis"
+	"NetworkDisk/Models/JWT"
+	"NetworkDisk/Models/Redis"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"net/http"
 )
 
-func BuildRouter(db *gorm.DB,pool redis.RedisPool,template jwt.Jwt) *gin.Engine {
+func BuildRouter(db *gorm.DB,pool *Redis.RedisPool,template JWT.Jwt) *gin.Engine {
 	server:=gin.Default()
 
 	group:=server.Group("/", Middlewares.CheakJWT(pool,template))
 	{
 		group.POST("/logout", Handlers.Logout(pool))
-		group.GET("/logout",func(c *gin.Context) {
-			c.JSON(http.StatusOK,gin.H{
-				"method":  "GET",
-				"routing": "logout",
-			})
-		})
 
-		group.POST("/upload", Handlers.Upload())
-		group.GET("/upload",func(c *gin.Context) {
-			c.JSON(http.StatusOK,gin.H{
-				"method":  "GET",
-				"routing": "logout",
-			})
-		})
+		group.POST("/upload", Handlers.Upload(db,pool))
 
-		group.GET("/download", Handlers.Download())
-		//group.GET("/download",func(c *gin.Context) {
-		//	c.JSON(http.StatusOK,gin.H{
-		//		"method":  "GET",
-		//		"routing": "download",
-		//	})
-		//})
+		group.POST("/usesharedlinks", Handlers.Usesharedlinks(db,pool))
+
+		group.GET("/getsharelinks", Handlers.Getsharelinks(pool))
+
+		group.GET("/download", Handlers.Download(pool))
+
+		group.GET("/filelist",Handlers.Filelist(pool))
 	}
 
-	server.POST("/test",Handlers.Test(pool))
-
 	server.POST("/register", Handlers.Register(db))
-	server.GET("/register",func(c *gin.Context) {
-		c.JSON(http.StatusOK,gin.H{
-			"method":  "GET",
-			"routing": "register",
-		})
-	})
 
 	server.POST("/login", Middlewares.CheakUserInfo(db),Handlers.Login(pool,template))
-	server.GET("/login",func(c *gin.Context) {
-		c.JSON(http.StatusOK,gin.H{
-			"method":  "GET",
-			"routing": "login",
-		})
-	})
 
 	return server
 }

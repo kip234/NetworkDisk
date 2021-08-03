@@ -7,14 +7,16 @@ import (
 )
 
 type Sql struct {
-	SqlName string		//数据库名
+	SqlName 	string	//数据库名
 	SqlUserName string	//数据库登录用账户名
-	SqlUserPwd string	//数据库登录用账户密码
-	SqlAddr string		//数据库地址
+	SqlUserPwd 	string	//数据库登录用账户密码
+	SqlAddr 	string	//数据库地址
 }
 
 type Conf struct {
 	Sql
+	Rredis 		string	//Redis地址
+	Wredis		string	//Redis地址
 	Addr string	//服务器地址
 }
 

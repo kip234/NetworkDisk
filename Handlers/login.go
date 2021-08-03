@@ -1,14 +1,14 @@
 package Handlers
 
 import (
-	"NetworkDisk/Models/jwt"
-	"NetworkDisk/Models/redis"
+	"NetworkDisk/Models/JWT"
+	"NetworkDisk/Models/Redis"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func Login(redis redis.RedisPool,template jwt.Jwt) gin.HandlerFunc {
+func Login(redis *Redis.RedisPool,template JWT.Jwt) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uid,err:=getUid(c)//获取UID
 		if err!=nil {

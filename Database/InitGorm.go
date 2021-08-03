@@ -2,6 +2,7 @@ package Database
 
 import (
 	"NetworkDisk/Models"
+	"NetworkDisk/Models/File"
 	"NetworkDisk/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -14,6 +15,6 @@ func InitGorm(sql *config.Sql) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(Models.User{})
+	db.AutoMigrate(Models.User{},File.File{},File.Privilege{})
 	return db
 }

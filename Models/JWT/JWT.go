@@ -1,4 +1,4 @@
-package jwt
+package JWT
 
 import (
 	"crypto/hmac"
@@ -54,7 +54,7 @@ func (j Jwt)Encoding() string {
 	return Header1+"."+Payload1+"."+base64.StdEncoding.EncodeToString(hash.Sum(nil))
 }
 
-/* func (j *Jwt)Decoding(jwt string) error
+/* func (j *Jwt)Decoding(JWT string) error
 * 参照当前的JWT刷新Payload的值
  ****************************************/
 func (j *Jwt)Decoding(jwt string) error {

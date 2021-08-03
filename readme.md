@@ -4,9 +4,9 @@
 
 ## PKG
 
-| 包名        | 作用              | 详情                         |
+| 包名        | 作用              | 描述                         |
 | ----------- | ----------------- | ---------------------------- |
-| config      | 处理部分配置信息  | 历史遗留                     |
+| config      | 处理部分配置信息  | 处理一些配置                 |
 | Database    | 负责MySQL相关操作 | 历史遗留                     |
 | Handlers    | 路由处理          | 登录，注册，注销，上传，下载 |
 | Middlewares | 中间件            | 信息验证，令牌验证           |
@@ -22,8 +22,6 @@
 ```go
 func Init(ConfPath string) (result Conf)
 ```
-
-> 目前只负责MySQL配置
 
 ```go
 type Sql struct {
@@ -59,18 +57,21 @@ func InitGorm(sql *config.Sql) *gorm.DB
 
 ### Handlers
 
-| 定义                                                         | 详情          |
-| :----------------------------------------------------------- | ------------- |
-| func Download() gin.HandlerFunc                              | 文件下载      |
-| funcs(封装了一些常用的功能)                                  | 从JWT中获得ID |
-| func Login(redis redis.RedisPool,template jwt.Jwt) gin.HandlerFunc | 登录          |
-| func Logout(pool redis.RedisPool) gin.HandlerFunc            | 注销          |
-| func Register(db *gorm.DB) gin.HandlerFunc                   | 注册          |
-| func Upload() gin.HandlerFunc                                | 上传文件      |
+| 定义                                                         | 描述             |
+| :----------------------------------------------------------- | ---------------- |
+| func Download() gin.HandlerFunc                              | 文件下载         |
+| funcs(封装了一些常用的功能)                                  | 从JWT中获得ID    |
+| func Login(redis redis.RedisPool,template jwt.Jwt) gin.HandlerFunc | 登录             |
+| func Logout(pool redis.RedisPool) gin.HandlerFunc            | 注销             |
+| func Register(db *gorm.DB) gin.HandlerFunc                   | 注册             |
+| func Upload() gin.HandlerFunc                                | 上传文件         |
+| func Getsharelinks(pool *Redis.RedisPool) gin.HandlerFunc    | 生成分享令牌     |
+| func Usesharedlinks(db *gorm.DB,pool *Redis.RedisPool) gin.HandlerFunc | 使用分享令牌     |
+| func Filelist(pool *Redis.RedisPool) gin.HandlerFunc         | 可下载的文件清单 |
 
 ### Middleware
 
-| 定义                                                         | 详情                 |
+| 定义                                                         | 描述                 |
 | ------------------------------------------------------------ | -------------------- |
 | func CheakJWT(pool redis.RedisPool,template jwt.Jwt) gin.HandlerFunc | 验证令牌正确性       |
 | func CheakUserInfo(db *gorm.DB) gin.HandlerFunc              | 验证用户信息的正确性 |
@@ -93,13 +94,16 @@ graph LR
 
 ### Models
 
-| 名字  | 详情          |
-| ----- | ------------- |
-| JWT   | JWT相关定义   |
-| Redis | Redis相关定义 |
-| User  | User相关定义  |
+| 位置            | 描述             |
+| --------------- | ---------------- |
+| JWT/Jwt         | JWT相关定义      |
+| Redis/RedisPool | Redis相关定义    |
+| User            | User相关定义     |
+| File/File       | File相关定义     |
+| File/Privilege  | 文件权限相关定义 |
+| funcs           | 一些通用函数     |
 
-#### JWT
+#### Jwt
 
 ```go
 type Header struct {
@@ -124,7 +128,7 @@ type Jwt struct{
 }
 ```
 
-| 方法                                    | 作用                             |
+| 方法                                    | 描述                             |
 | --------------------------------------- | -------------------------------- |
 | func (j Jwt)Encoding() string           | 基于当前的Header与Payload计算JWT |
 | func (j *Jwt)Decoding(jwt string) error | 基于jwt刷新Payload的值           |
@@ -143,12 +147,15 @@ type RedisPool struct {
 }
 ```
 
-| 方法                                             | 详情         |
-| ------------------------------------------------ | ------------ |
-| func (r *RedisPool)Init()                        | 初始化连接池 |
-| func (r RedisPool)SET(args ...interface{}) error | 执行set指令  |
-| func (r RedisPool)GET(key string) (string,error) | 执行get指令  |
-| func (r RedisPool)DEL(key string) error          | 执行del指令  |
+| 方法                                                         | 描述          |
+| ------------------------------------------------------------ | ------------- |
+| func (r *RedisPool)Init()                                    | 初始化连接池  |
+| func (r RedisPool)SET(args ...interface{}) error             | 执行set指令   |
+| func (r RedisPool)GET(key string) (string,error)             | 执行get指令   |
+| func (r RedisPool)DEL(key string) error                      | 执行del指令   |
+| func (r RedisPool)SADD(args ...interface{}) error            | 执行sadd      |
+| func (r RedisPool)SISMEMBER(args ...interface{}) (int64,error) | 执行sismember |
+| func (r RedisPool)SMEMBERS(key string) (re []string,err error) | 执行smembers  |
 
 #### User
 
@@ -160,12 +167,51 @@ type User struct {
 }
 ```
 
-| 方法                                                | 详情                                  |
+| 方法                                                | 描述                                  |
 | :-------------------------------------------------- | ------------------------------------- |
 | func (u *User)Save(db *gorm.DB) (err error)         | 在数据库中创建用户                    |
 | func (u *User)Load(db *gorm.DB,uid int) (err error) | 根据提供的UID读取用户信息             |
 | func (u *User)PwdIsRight(db *gorm.DB) bool          | 判断密码是否正确，如果不正确返回false |
 | func (u *User)IsExist(db *gorm.DB) bool             | 判断是否存在，如果不存在返回false     |
+
+#### File
+
+```go
+type File struct {
+	PathName string `gorm:"primaryKey"`
+	Name     string `gorm:"not null"`
+	Size     int64   `gorm:"not null"`
+	Owner    int    `gorm:"not null"` //拥有权用户ID
+}
+```
+
+| 方法                                  | 描述         |
+| ------------------------------------- | ------------ |
+| func (f *File)Save(db *gorm.DB) error | 保存到数据库 |
+
+#### Privilege
+
+```go
+type Privilege struct {
+	Pri 	 uint 	`gorm:"primaryKey"`
+	PathName string `gorm:"not null"`
+	Owner    int    `gorm:"not null"` //拥有权用户ID
+	User	 int//有使用权的用户
+}
+```
+
+
+| 方法                                       | 描述             |
+| ------------------------------------------ | ---------------- |
+| func (p *Privilege)Save(db *gorm.DB) error | 将记录存入数据库 |
+
+#### funcs
+
+| 方法                                                    | 描述                          |
+| ------------------------------------------------------- | ----------------------------- |
+| func OwnerKey(id int) string                            | 根据id获取所有权在Redis中的键 |
+| func UserKey(id int) string                             | 根据id获取使用权在Redis中的键 |
+| func Out(db *gorm.DB,redis Redis.RedisPool) (err error) | 将使用权与拥有权缓存至Redis   |
 
 ### Routers
 
@@ -173,8 +219,11 @@ type User struct {
 group:=server.Group("/", Middlewares.CheakJWT(pool,template))
 {
 	group.POST("/logout", Handlers.Logout(pool))
-	group.POST("/upload", Handlers.Upload())
-	group.GET("/download", Handlers.Download())
+	group.POST("/upload", Handlers.Upload(db,pool))
+	group.POST("/usesharedlinks", Handlers.Usesharedlinks(db,pool))
+	group.GET("/getsharelinks", Handlers.Getsharelinks(pool))
+	group.GET("/download", Handlers.Download(pool))
+	group.GET("/filelist",Handlers.Filelist(pool))
 }
 server.POST("/register", Handlers.Register(db))
 server.POST("/login", Middlewares.CheakUserInfo(db),Handlers.Login(pool,template))
@@ -198,9 +247,9 @@ server.POST("/login", Middlewares.CheakUserInfo(db),Handlers.Login(pool,template
 
 ### /logout
 
-| Headers       | 描述 |
-| ------------- | ---- |
-| Authorization | 令牌 |
+| Headers       | 描述     |
+| ------------- | -------- |
+| Authorization | 身份令牌 |
 
 ### /upload
 
@@ -220,7 +269,77 @@ server.POST("/login", Middlewares.CheakUserInfo(db),Handlers.Login(pool,template
 | filepath        | 当前用户目录下的文件路径(以“/”开头) |
 | filename        | 文件名                              |
 
-| Headers       | 描述 |
-| ------------- | ---- |
-| Authorization | 令牌 |
+| Headers       | 描述     |
+| ------------- | -------- |
+| Authorization | 身份令牌 |
+
+### /getsharelinks
+
+| Headers       | 描述     |
+| ------------- | -------- |
+| Authorization | 身份令牌 |
+
+| Body=>form-data | 描述                         |
+| --------------- | ---------------------------- |
+| filepath        | 文件所在目录                 |
+| filename        | 文件名                       |
+| uid             | 要分享的用户ID,如果为0则通用 |
+
+### /usesharedlinks
+
+| Headers       | 描述     |
+| ------------- | -------- |
+| Authorization | 身份令牌 |
+
+| Body=>form-data | 描述       |
+| --------------- | ---------- |
+| link            | 分享的令牌 |
+
+### /filelist
+
+| Headers       | 描述     |
+| ------------- | -------- |
+| Authorization | 身份令牌 |
+
+## 数据库
+
+> 理想状态下应该是下面的情况
+
+```mysql
+mysql> desc users;
++-------+----------+------+-----+---------+----------------+
+| Field | Type     | Null | Key | Default | Extra          |
++-------+----------+------+-----+---------+----------------+
+| uid   | bigint   | NO   | PRI | NULL    | auto_increment |
+| name  | longtext | YES  |     | NULL    |                |
+| pwd   | longtext | YES  |     | NULL    |                |
++-------+----------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+```
+
+```mysql
+mysql> desc files;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| path_name | varchar(191) | NO   | PRI | NULL    |       |
+| name      | longtext     | NO   |     | NULL    |       |
+| size      | bigint       | NO   |     | NULL    |       |
+| owner     | bigint       | NO   |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+```
+
+```mysql
+mysql> desc privileges;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| pri       | bigint       | NO   | PRI | NULL    |       |
+| path_name | varchar(191) | NO   | MUL | NULL    |       |
+| owner     | bigint       | YES  |     | NULL    |       |
+| user      | bigint       | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+```
 

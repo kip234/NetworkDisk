@@ -6,8 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="64f3e75e-5de8-435c-8f8f-21f83862e0f9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Database/InitGorm.go" beforeDir="false" afterPath="$PROJECT_DIR$/Database/InitGorm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global.go" beforeDir="false" afterPath="$PROJECT_DIR$/Global.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/Upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/Upload.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/download.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/download.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/funcs.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/funcs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Handlers/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/redis/redis.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/redis/redis.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/logout.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/logout.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Handlers/test.go" beforeDir="false" afterPath="$PROJECT_DIR$/Handlers/test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Middlewares/CheakJWT.go" beforeDir="false" afterPath="$PROJECT_DIR$/Middlewares/CheakJWT.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Middlewares/CheakUserInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/Middlewares/CheakUserInfo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/jwt/JWT.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/JWT/JWT.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/redis/redis.go" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Redis/redis.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/Routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf.json" beforeDir="false" afterPath="$PROJECT_DIR$/conf.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +87,18 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

@@ -1,4 +1,4 @@
-package redis
+package Redis
 
 import (
 	"fmt"
@@ -12,8 +12,8 @@ type RedisPool struct {
 	IdLeTimeout	int
 	MaxIdle		int
 	MaxActive	int
-	rpool *redis.Pool
-	wpool *redis.Pool
+	rpool *redis.Pool//负责读取
+	wpool *redis.Pool//负责写入
 }
 
 func (r *RedisPool)Init()  {
@@ -73,4 +73,43 @@ func (r RedisPool)DEL(key string) error {
 		err=fmt.Errorf("func (r RedisPool)DEL(key string) error: %s",err.Error())
 	}
 	return err
+}
+
+func (r RedisPool)SADD(args ...interface{}) error {
+	rdb :=r.wpool.Get()
+	defer rdb.Close()
+	_,err:=rdb.Do("SADD",args...)
+	if err != nil{
+		err=fmt.Errorf("func (r RedisPool)DEL(key string) error: %s",err.Error())
+	}
+	return nil
+}
+
+func (r RedisPool)SISMEMBER(args ...interface{}) (int64,error) {
+	rdb :=r.wpool.Get()
+	defer rdb.Close()
+	v,err:=rdb.Do("SISMEMBER",args...)
+	if err != nil{
+		err=fmt.Errorf("func (r RedisPool)DEL(key string) error: %s",err.Error())
+	}
+	re,ok:=v.(int64)
+	if !ok {
+		return 0,fmt.Errorf("func (r RedisPool)SISMEMBER(args ...interface{}) (int,error) : Assertion error")
+	}
+	return re,nil
+}
+
+func (r RedisPool)SMEMBERS(key string) (re []string,err error) {
+	rdb :=r.wpool.Get()
+	defer rdb.Close()
+	v,err:=rdb.Do("SMEMBERS",key)
+	fmt.Println(v)
+	if err != nil{
+		err=fmt.Errorf("func (r RedisPool)SMEMBERS(key string) ([]string,error): %s",err.Error())
+	}
+	tmp:=v.([]interface{})
+	for _,i:=range tmp{
+		re=append(re, string(i.([]uint8)))//这里很有可能会出问题
+	}
+	return re,nil
 }
