@@ -1,4 +1,6 @@
-> **请克隆至 GOPATH/src/NetworkDisk** 目录下并启用 **GO111MODULE**
+> 请克隆至 **GOPATH/src/NetworkDisk** 目录下并启用 **GO111MODULE**
+>
+> 已上云 121.4.76.240:8090
 
 # NetworkDisk
 
@@ -142,7 +144,7 @@ type RedisPool struct {
 	IdLeTimeout	int
 	MaxIdle		int
 	MaxActive	int
-	rpool *redis.Pool
+	rpool *redis.Pool //考虑到后头可能要搞个主从所以区分了读和写
 	wpool *redis.Pool
 }
 ```
@@ -343,3 +345,12 @@ mysql> desc privileges;
 4 rows in set (0.00 sec)
 ```
 
+## 部分示例
+
+> ID:1 password:123
+
+/download
+
+> filepath: ./files/1/
+>
+> filename: miku.jpg
