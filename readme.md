@@ -27,14 +27,16 @@ func Init(ConfPath string) (result Conf)
 
 ```go
 type Sql struct {
-	SqlName     string	//数据库名
+	SqlName 	string	//数据库名
 	SqlUserName string	//数据库登录用账户名
-	SqlUserPwd  string	//数据库登录用账户密码
-	SqlAddr     string	//数据库地址
+	SqlUserPwd 	string	//数据库登录用账户密码
+	SqlAddr 	string	//数据库地址
 }
 
 type Conf struct {
 	Sql
+	Rredis 		string	//Redis地址
+	Wredis		string	//Redis地址
 	Addr string	//服务器地址
 }
 ```
@@ -47,7 +49,9 @@ type Conf struct {
   "SqlUserName": "root",
   "SqlUserPwd": "root",
   "SqlAddr":"127.0.0.1:3306",
-  "Addr":"localhost:8080"
+  "Addr":"localhost:8080",
+  "Rredis":"localhost:6379",
+  "Wredis":"localhost:6379"
 }
 ```
 
