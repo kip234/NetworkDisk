@@ -12,7 +12,7 @@
 | Database    | 负责MySQL相关操作 | 历史遗留                     |
 | Handlers    | 路由处理          | 登录，注册，注销，上传，下载 |
 | Middlewares | 中间件            | 信息验证，令牌验证           |
-| Models      | 模型              | JWT，Redis，User             |
+| Models      | 模型              | JWT，Redis，User，Privilege    |
 | Routers     | 路由设置          | ….                           |
 
 
@@ -27,10 +27,10 @@ func Init(ConfPath string) (result Conf)
 
 ```go
 type Sql struct {
-	SqlName string		//数据库名
+	SqlName     string	//数据库名
 	SqlUserName string	//数据库登录用账户名
-	SqlUserPwd string	//数据库登录用账户密码
-	SqlAddr string		//数据库地址
+	SqlUserPwd  string	//数据库登录用账户密码
+	SqlAddr     string	//数据库地址
 }
 
 type Conf struct {
@@ -144,8 +144,8 @@ type RedisPool struct {
 	IdLeTimeout	int
 	MaxIdle		int
 	MaxActive	int
-	rpool *redis.Pool //考虑到后头可能要搞个主从所以区分了读和写
-	wpool *redis.Pool
+	rpool           *redis.Pool //考虑到后头可能要搞个主从所以区分了读和写
+	wpool           *redis.Pool
 }
 ```
 
@@ -163,9 +163,9 @@ type RedisPool struct {
 
 ```go
 type User struct {
-	Uid int `gorm:"primaryKey"`
-	Name string	`gorm:"string not null"`//用户名
-	Pwd string `gorm:"string not null"`//用户密码
+	Uid int         `gorm:"primaryKey"`
+	Name string	`gorm:"not null"`//用户名
+	Pwd string      `gorm:"not null"`//用户密码
 }
 ```
 
@@ -182,7 +182,7 @@ type User struct {
 type File struct {
 	PathName string `gorm:"primaryKey"`
 	Name     string `gorm:"not null"`
-	Size     int64   `gorm:"not null"`
+	Size     int64  `gorm:"not null"`
 	Owner    int    `gorm:"not null"` //拥有权用户ID
 }
 ```
@@ -313,8 +313,8 @@ mysql> desc users;
 | Field | Type     | Null | Key | Default | Extra          |
 +-------+----------+------+-----+---------+----------------+
 | uid   | bigint   | NO   | PRI | NULL    | auto_increment |
-| name  | longtext | YES  |     | NULL    |                |
-| pwd   | longtext | YES  |     | NULL    |                |
+| name  | longtext | NO   |     | NULL    |                |
+| pwd   | longtext | NO   |     | NULL    |                |
 +-------+----------+------+-----+---------+----------------+
 3 rows in set (0.01 sec)
 ```
@@ -339,8 +339,8 @@ mysql> desc privileges;
 +-----------+--------------+------+-----+---------+-------+
 | pri       | bigint       | NO   | PRI | NULL    |       |
 | path_name | varchar(191) | NO   | MUL | NULL    |       |
-| owner     | bigint       | YES  |     | NULL    |       |
-| user      | bigint       | YES  |     | NULL    |       |
+| owner     | bigint       | NO   |     | NULL    |       |
+| user      | bigint       | NO   |     | NULL    |       |
 +-----------+--------------+------+-----+---------+-------+
 4 rows in set (0.00 sec)
 ```
