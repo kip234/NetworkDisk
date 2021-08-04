@@ -352,6 +352,10 @@ mysql> desc privileges;
 ## 部分示例
 
 > ID:1 password:123
+>token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+>    eyJpc3MiOiJraXAiLCJleHAiOjAsInN1YiI6Ik5ldHdvcmtEaXNrIiwiYXVkIjoxLCJuZGYiOjAsImlhdCI6MCwianRpIjowfQ==.
+>    Z2O0iTh/4c0t2BUIGVz1BY+GDGDCy6+u/ISRl2TLjSQ=
+> 因为token较长所以换了行.
 
 /download
 
